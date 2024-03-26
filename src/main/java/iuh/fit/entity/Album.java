@@ -5,9 +5,9 @@
  */
 package iuh.fit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 /*
  * @description:
@@ -20,15 +20,25 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
+@JsonIgnoreProperties(value = {"artistID", "genreID", "songID"})
 public class Album {
-
+    @NonNull
     private String albumID;
+    @NonNull
     private String title;
-    private int yearOfRelease;
+    @NonNull
+    private Integer yearOfRelease;
+    @NonNull
     private String downloadLink;
-    private double price;
+    @NonNull
+    private Double price;
+
+    @ToString.Exclude
     private Artist artist;
+    @ToString.Exclude
     private Genre genre;
+    @ToString.Exclude
     private Song song;
 
 }

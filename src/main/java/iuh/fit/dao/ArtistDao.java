@@ -31,10 +31,11 @@ public class ArtistDao {
 
     // a. Thêm 1 nghệ sĩ mới: addArtist(artist: Artist): boolean
     public boolean addArtist(Artist artist) {
-        String query = "CREATE (a:Artist {artistID: $artistID, name: $name, birthDate: $birthDate, url: $url})";
-        Map<String, Object> params = Map.of("artistID", artist.getArtistID(), "name", artist.getName(), "birthDate", artist.getBirthDate(), "url", artist.getUrl());
+        String query = "CREATE (a:Artist {artistID: $artistID, name: $name, birthDate: datetime($birthDate), url: $url})";
+        Map<String, Object> params = Map.of("artistID", artist.getArtistID(), "name", artist.getName(), "birthDate", artist.getBirthDate().atTime(0, 0, 0), "url", artist.getUrl() );
+
         try (Session session = driver.session(sessionConfig)) {
-            return session.writeTransaction(tx -> {
+            return session.executeWrite(tx -> {
                 Result result = tx.run(query, params);
                 return result.consume().counters().nodesCreated() > 0;
             });

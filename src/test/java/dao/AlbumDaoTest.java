@@ -6,7 +6,6 @@
 package dao;
 
 import iuh.fit.dao.AlbumDao;
-import iuh.fit.dao.ArtistDao;
 import iuh.fit.utils.AppUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,7 @@ public class AlbumDaoTest {
     //b. Cập nhật đơn giá cho 1 album nào đó khi biết mã album
     @Test
     public void testUpdateAlbumPrice() {
-        albumDao.updatePriceOfAlbum("A003", 100000);
+        albumDao.updatePriceOfAlbum("A003", 23333333);
         System.out.println("Cập nhật thành công");
     }
 
@@ -46,7 +45,7 @@ public class AlbumDaoTest {
     // d. Thoonsg ke số album theo từng the loại,kết quả sap xep theo tên thể loại tăng dần:
     @Test
     public void testCountAlbumsByGenre() {
-        albumDao.getNumberOfAlbumsByGenre().forEach((key, value) -> System.out.println(key + " : " + value));
+        albumDao.getNumberOfAlbumsByGenre().forEach((k, v) -> System.out.println(k + " - " + v));
     }
 
     @AfterAll

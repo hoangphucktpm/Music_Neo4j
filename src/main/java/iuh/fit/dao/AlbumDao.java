@@ -40,9 +40,9 @@ public class AlbumDao {
         String query = "MATCH (a:Album {albumID: $albumID}) SET a.price = $price";
         Map<String, Object> params = Map.of("albumID", albumID, "price", price);
         try (Session session = driver.session(sessionConfig)) {
-            return session.writeTransaction(tx -> {
-                Result result = tx.run(query, params);
-                return result.consume().counters().nodesCreated() > 0;
+            return session.executeWrite(tx -> {
+                tx.run(query, params);
+                return true;
             });
         }
     }
@@ -50,10 +50,10 @@ public class AlbumDao {
 
     //// Tìm kiếm các album thuộc về thể loại nào đó khi biiết tên thể loại: listAlbumsByGenre(genreName: String): List<Album>
     public List<Album> listAlbumsByGenre(String name) {
-        String query = "MATCH (a:Album)-[:BELONGS_TO]->(g:Genre {name: $name}) RETURN a";
+        String query = "MATCH (a:Album)-[:BELONGS_TO]->(g:Genre) WHERE g.name = $name RETURN a";
         Map<String, Object> params = Map.of("name", name);
         try (Session session = driver.session(sessionConfig)) {
-            return session.readTransaction(tx -> {
+            return session.executeRead(tx -> {
                 Result result = tx.run(query, params);
                 if (!result.hasNext()) {
                     return null;
@@ -74,7 +74,7 @@ public class AlbumDao {
     public Map<String, Long> getNumberOfAlbumsByGenre() {
         String query = "MATCH (a:Album)-[:BELONGS_TO]->(g:Genre) RETURN g.name, count(a) as count ORDER BY g.name";
         try (Session session = driver.session(sessionConfig)) {
-            return session.readTransaction(tx -> {
+            return session.executeRead(tx -> {
                 Result result = tx.run(query);
                 return result.stream()
                         .collect(Collectors.toMap(
